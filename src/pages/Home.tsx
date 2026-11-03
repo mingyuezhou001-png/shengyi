@@ -13,7 +13,7 @@ import {
   VolumeX,
   X,
 } from "lucide-react";
-import { trpc } from "@/providers/trpc";
+import { translateText } from "@/lib/translate";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import "../App.css";
 
@@ -39,7 +39,6 @@ export default function Home() {
   const [showInput, setShowInput] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [manualText, setManualText] = useState("");
-  const translate = trpc.translate.run.useMutation();
   const queueRef = useRef<Promise<void>>(Promise.resolve());
   const sessionRef = useRef(0);
   const autoSpeakRef = useRef(autoSpeak);
@@ -68,16 +67,16 @@ export default function Home() {
       queueRef.current = queueRef.current.then(async () => {
         if (session !== sessionRef.current) return;
         try {
-          const result = await translate.mutateAsync({ text, direction: entryDirection });
+          const translated = await translateText(text, entryDirection);
           if (session !== sessionRef.current) return;
           setEntries((current) =>
             current.map((entry) =>
               entry.id === id
-                ? { ...entry, translated: result.translated, status: "done" }
+                ? { ...entry, translated, status: "done" }
                 : entry,
             ),
           );
-          speak(result.translated, directionMeta[entryDirection].targetLang);
+          speak(translated, directionMeta[entryDirection].targetLang);
         } catch (translationError) {
           if (session !== sessionRef.current) return;
           setEntries((current) =>
@@ -93,7 +92,7 @@ export default function Home() {
         }
       });
     },
-    [speak, translate],
+    [speak],
   );
 
   const addTranscript = useCallback(
@@ -276,7 +275,7 @@ export default function Home() {
           {speech.isListening ? <CircleStop size={27} /> : <Mic size={27} />}
           <span>{speech.isListening ? "停止同传" : "开始同传"}</span>
         </button>
-        <p className="dock-note">仅在本次会话中处理 · 不保存录音</p>
+        <p className="dock-note">不保存录音 · 翻译文本发送至 MyMemory</p>
       </footer>
 
       {showHelp && (
@@ -291,7 +290,7 @@ export default function Home() {
               <li>如需放到主屏幕：点 Safari 的“分享”，选择“添加到主屏幕”。</li>
             </ol>
             <p>语音识别能力取决于 iOS 和 Safari 版本，且需要联网。无法识别时，可使用“手动输入”。</p>
-            <p><strong>隐私：</strong>不保存录音；翻译文本仅用于本次请求，刷新页面后记录消失。AI 翻译可能消耗站点额度。</p>
+            <p><strong>隐私：</strong>不保存录音；待翻译文本会发送至 MyMemory 免费翻译服务。请勿输入密码或隐私信息。刷新页面后记录消失，匿名免费额度为每天 5,000 字符。</p>
           </section>
         </div>
       )}
