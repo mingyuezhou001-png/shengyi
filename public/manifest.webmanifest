@@ -1,0 +1,13 @@
+{
+  "name": "声译 · 中英文同传",
+  "short_name": "声译",
+  "description": "手机上的中英文实时语音翻译工具",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ddedf0",
+  "theme_color": "#c4dbe0",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
