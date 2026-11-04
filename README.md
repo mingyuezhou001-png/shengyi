@@ -1,5 +1,7 @@
 # 声译
 
+[![CI](https://github.com/mingyuezhou001-png/shengyi/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mingyuezhou001-png/shengyi/actions/workflows/ci.yml)
+
 面向手机浏览器的中英文实时翻译网页。支持中文→英文、英文→中文、连续语音识别、临时识别文本、译文自动朗读、手动输入翻译和本轮记录清空。
 
 ## 使用
